@@ -5,7 +5,7 @@
 		{
 			"msg1": "The Steam Community is currently down",
 			"msg2": "We were unable to get your ID based on what you entered.",
-			"msg3": "Please enter your STEAM:0:0:00000 ID or wait untill Steam comes back online",
+			"msg3": "Please enter your STEAM_0:0:00000 ID or wait untill Steam comes back online",
 			"msg4" : "Sorry we were unable to get your Steam ID.",
 			"msg5": "You probably entered an incorrect Steam ID",
 			"msg6": "Please check and make sure you entered a valid Steam ID and try again."
@@ -53,10 +53,12 @@
 		"notes" : "Notes",
 		"steamlink" : "Steam Link",
 		"edituser" : "Edit User",
+		"delete" : "Delete",
 		"searchmsg" : "Search for Name, SteamID, or Email",
 		"hide" : "Hide Expired",
 		"show" : "Show Expired",
 		"clear" : "Clear",
+		"resetfields" : "Reset Fields",
 		"perkson" : "Perks On",
 		"perksoff" : "Perks Off",
 		"perksactivated" : "Perks Activated",

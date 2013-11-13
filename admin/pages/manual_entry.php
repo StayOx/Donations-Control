@@ -151,13 +151,13 @@ header("Location: show_donations.php");
 			     <?php
 			     if(TIERED_DONOR){
 			     		echo "<div id='vipSwitch'>";
-			        	echo "<input type='radio' name='tier' value='1' id='tierRadio'  checked />".$group1['name'] . " ";
+			        	echo "<input type='radio' name='tier' value='1' id='tierRadio' checked />".$group1['name'] . " ";
 			        	echo "<input type='radio' name='tier' value='2' id='tierRadio' />".$group2['name'] . " ";
 			        	echo "</div>";
 			     }?>
 			 
 		    </fieldset>
 		  
-		   <input type='submit' value='Manual Entry' form='manual_entry_form' />
-		   <input type='reset' value='Reset Fields' form='manual_entry_form' />
+		   <input type='submit' value='<?php echo $lang->admin[0]->manualentry; ?>' form='manual_entry_form' />
+		   <input type='reset' value='<?php echo $lang->admin[0]->resetfields; ?>' form='manual_entry_form' />
 			</form>

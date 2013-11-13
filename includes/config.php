@@ -95,6 +95,13 @@ $mail['donor'] = true; //Send confimation/ thankyou email to the donor?
 $mail['donorSubject'] = 'Thank your for your donation';
 $mail['donorMsg'] = 'Message to send to your donors';
 
+/////////////////////////
+////Language Settings////
+/////////////////////////
+
+define("DEFAULT_LANGUAGE", "pt-br"); // name of file in translation folder. dont add .json
+$availableLanguages = array('en-us' =>'English' , '1337' =>'1337 5pEek' , 'pt-br' =>'Português Brasileiro' ); //set friendly display names here
+
 //////////////////////
 ////Miscellaneous////
 ////////////////////

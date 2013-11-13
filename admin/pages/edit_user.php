@@ -228,6 +228,7 @@ if($result){
 			        	<input name='user_id' value="<?php echo $user_id ?>" type="hidden" />
 			        	<input type="radio" name='activated' value='1' <?php if($activated==='1'){echo "checked />" .$lang->admin[0]->perksactivated;} else {echo "/>" .$lang->admin[0]->addperks;} ?> 
 			        	<input type="radio" name='activated' value='2' <?php if($activated==='2'){echo "checked />" .$lang->admin[0]->perksoff;} else {echo "/>" .$lang->admin[0]->noperks;} ?> 
+					<br />
 			     <?php
 			     if(TIERED_DONOR){
 			     		if($tier =="1"){
@@ -241,12 +242,12 @@ if($result){
 			      <input type="hidden" name="edit_user_form" value="1">
 		    </fieldset>
 		   </form>
-		   <input type='submit' value='Edit User' form='edit_user_form' />
+		   <input type='submit' value='<?php echo $lang->admin[0]->edituser; ?>' form='edit_user_form' />
 		   <?php
 		   if (TIERED_DONOR) {
-		   		echo '<input type="button" onclick="delete_confirm(\''.$steam_id.'\',\''.$tier.'\');" value="Delete '. $username.' "/>';
+		   		echo '<input type="button" onclick="delete_confirm(\''.$steam_id.'\',\''.$tier.'\');" value="'.$lang->admin[0]->delete.' '.$username.'"/>';
 		   }else{
-		   		echo '<input type="button" onclick="delete_confirm(\''.$steam_id.'\');" value="Delete '. $username.' "/>';
+		   		echo '<input type="button" onclick="delete_confirm(\''.$steam_id.'\');" value="'.$lang->admin[0]->delete.' '.$username.'"/>';
 		   }   
 		
 echo $footer;
