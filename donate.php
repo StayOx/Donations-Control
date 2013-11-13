@@ -135,8 +135,7 @@ echo'
             border-radius: 5px;}
         input[type=submit]:hover{font-size:150%;
             background-color: rgba(215, 44, 44, 0.8); 
-            color: black;
-        }
+            color: black;}
         #sorry{color:red;
             padding: 10px;
             background-color: rgba(15, 17, 14, 0.4);
@@ -144,14 +143,14 @@ echo'
             border-radius: 10px;}
         #langSelect{
             position:relative;
+			margin-top:-10px;
+			padding: -10px; 
             z-index:99;
-            float:right;
-        }
+            float:right;}
     </style>
 </head>
     <body>';
-
-
+	
     echo "<title>". $lang->donate[0]->msg1 ."</title>";
     echo '<div class="content"><center>';
     echo '<form id="langSelect" method="post">Change Language:
@@ -165,13 +164,14 @@ echo'
             }
            
         }
+		
         unset($i);
         printf("<input type='hidden' name='steamid_user' value='%s'><input type='hidden' name='amount' value='%s'>",$userInfo['steamid'],$amount);
     if (TIERED_DONOR) {
         printf("<input type='hidden' name='tier' value='%s'>",$tier);
     }
     echo'</select>
-    </form>';    
+    </form></br>';    
             if($return_donor===true){
                 printf("<p id='welcome_back'>" . $lang->donate[0]->msg2 ." ". date('l F j Y',$expiration_date) ."</p>" , $username);
             } 
@@ -188,7 +188,7 @@ echo'
         }            
 	            echo "<h1>".$lang->donate[0]->msg4."</h1><br/ >";
 	            echo "<img src='{$avatarfull}' /><br /> <h1>  <a href='{$steam_link}' target='_blank'>{$username}</a><h1><hr /><h3>";
-                printf("<p>". $lang->donate[0]->msg5, "5" ,"31");
+                printf("<p>". $lang->donate[0]->msg5, $amount, $days_purchased);
                 if(TIERED_DONOR){
                     if ($tier=="1") {
                         printf(" ". $lang->donate[0]->msg6." ",$group1['name']. "</p>");
