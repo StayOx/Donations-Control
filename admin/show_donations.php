@@ -86,11 +86,7 @@ if (isset($_GET['logout'])) {
 	}
 	$_SESSION['message']="<h3 class='success'>".sprintf($lang->sysmsg[0]->deleted , $steam_id)."</h3>";
 
-<<<<<<< HEAD
 	$log->logAction(sprintf($lang->logmsg[0]->deleted , $_SESSION['username'], $steam_id));
-=======
-	$log->logAction(sprintf($lang->logmsg[0]->deleted , $_SESSION['steam_id'], $steam_id));
->>>>>>> 90ee31a1685786dca591e8954644255a4c5a26c5
 
 
 	header('location: show_donations.php');
