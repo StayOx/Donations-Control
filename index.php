@@ -5,6 +5,13 @@ include_once 'includes/config.php';
 include_once 'includes/class_lib.php';
   $found_user = false;
   $timestamp = date('U');
+  $language = new language;
+if (isset($_POST['langSelect'])) {
+    $lang = $language->getLang($_POST['langSelect']);
+}else{
+    $lang = $language->getLang(DEFAULT_LANGUAGE);
+}
+
   $cacheExpire = cache_time * 86400;
 if (PLAYER_TRACKER) {
 
@@ -94,70 +101,139 @@ if (PLAYER_TRACKER) {
 $mysqliD->close();
     print("<!DOCTYPE html>");
     print("<html>");
-    print('<meta http-equiv="Content-Type"content="text/html;charset=UTF8">');
     print("<head>");
 
-    //Javascript to allow gifting
+	
+echo'
+<html>
+<meta http-equiv="Content-Type"content="text/html;charset=UTF8">
+<head>
+    <script type="text/javascript" src="scripts/jscolor/jscolor.js"></script>
+    <script>
+    function change(){
+        document.getElementById("langSelect").submit();
+    }
+    </script>
+    <style type="text/css">
+        body{background-color: gray;}
+        .content{
+			width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            border:3px solid black;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: white;}
+        #langSelect{
+            position:relative;
+			margin-top:-10px;
+			padding: -10px; 
+            z-index:99;
+            float:right;}
+		#infobox{
+		font-size: 14px;}
+		
+    </style>
+</head>
+    <body>';
+	
+    echo "<title>". $lang->main[0]->title ."</title>";
+    echo '<div class="content"><center>';
+    echo '<form id="langSelect" method="post">Change Language:
+    <select name = "langSelect" onchange="change()">';
+        $langList = $language->listLang();
+        foreach ($langList as $list) {
+            if ($list == $lang->language) {
+               printf('<option value="%s" selected>%s</option>',$list,$availableLanguages[$list]);
+            }else{
+                printf('<option value="%s">%s</option>',$list,$availableLanguages[$list]);
+            }
+           
+        }
+    
+	echo"</select>";
+	echo"</form>";
+	echo"</br>";  
+	
+	//Javascript to allow gifting
     print("<script type=\"text/javascript\">");
     print("function gift() {document.getElementById('steamid-box').style.display = 'block';
       document.getElementById('id-field').value = '';
-      document.getElementById('id-field').placeholder = 'Enter SteamID here';
+      document.getElementById('id-field').placeholder = '". $lang->main[0]->steamidgift ."';
       document.getElementById('userid').style.display = 'none';
       document.getElementById('infobox').style.display = 'block';
     }");
 
     print("</script>");
-    print("</head>");
-    print("<body id='original'>");
-    print("<style type=\"text/css\">#infobox{font-size: 12px;}</style>");
+	print("<body id='content'>");
     print("<center>");
+	print("<a href=\"index.php\"><img border=\"0\" src=\"images/logo.png\" alt=\"Community Logo\" width=\"220\" height=\"200\"></a>");
+	print("</br>");
     print("<input type=\"image\" src=\"images/btn_donateCC_LG.gif\" form=\"donate_form\" />");
-    print("<form action=\"donate.php\" target=\"blank\" id=\"donate_form\" method=\"post\">");
-    print("<p>Amount: $<input type=\"text\" name=\"amount\" size=\"5\" class=\"inputbox\" value=\"5\" required=\"true\"></p>");
+	print("<form action=\"donate.php\" target=\"_self\" id=\"donate_form\" method=\"post\">");
+	
+	print("<p>". $lang->main[0]->amount ."<input type=\"text\" name=\"amount\" size=\"5\" onmouseover=\"this.style.backgroundColor='whitesmoke'\" onmouseout=\"this.style.backgroundColor='whitesmoke'\" class=\"inputbox\" value=\"5\" required=\"true\"></p>");
     if(TIERED_DONOR){
           print("<input type=\"radio\" name=\"tier\" value=\"1\" checked =\"1\" id=\"tier1\">".$group1['name']." <input type=\"radio\" name=\"tier\" value=\"2\" id=\"tier2\">".$group2['name']."<br />");
-    }
+		print("<p>");
+	}	
       if($found_user){
         print("<div id='steamid-box' style=\"display:none;\" ><label for='steamid_user'>Steam ID:<br /></label>");
         print("<input type=\"text\" name=\"steamid_user\" required=\"true\" id=\"id-field\"  value=\"{$steamid}\" ></div>");
-        print("<div id=\"userid\">Welcome back {$playername} <br />");
+        print("<div id=\"userid\">". $lang->main[0]->welcome ." {$playername} <br /><br />");
         print("<img src='{$avatarmedium}' style=\"border:1px solid black;border-radius:5px;\" /><br />");
-        print("<a href='#' onclick=\"gift();\"> Donate for someone else </a></div>");
+        print("<a href='#' onclick=\"gift();\">". $lang->main[0]->gift ."</a></div>");
         print("<div id='infobox' style=\"display:none;\">");
-        print("<p>Acceptable formats:<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/{name} or {name}<br /></p>");
+        print("<p>". $lang->main[0]->formats ."<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
         print("</div>");
       }else{
-        print("<label for=\"paypaloption1\">Steam ID:<br /></label><input type=\"text\" id=\"paypaloption1\" name=\"steamid_user\" required=\"true\" id=\"id-box\" placeholder=\"Please enter your SteamID\" required=\"true\" size=\"30\"></p>");
+        print("<label for=\"paypaloption1\">Steam ID:<br /></label><input type=\"text\" id=\"paypaloption1\" name=\"steamid_user\" required=\"true\" id=\"id-box\" onmouseover=\"this.style.backgroundColor='whitesmoke'\" onmouseout=\"this.style.backgroundColor='whitesmoke'\" placeholder=\"". $lang->main[0]->steamid ."\" required=\"true\" size=\"30\"></p>");
         print("<div id='infobox'>");
-        print("<p>Acceptable formats:<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/{name} or {name}<br /></p>");
+        print("<p>". $lang->main[0]->formats ."<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
         print("</div>");
-      }
-    print("</form>");
+	}
+
+	print("</form>");
+	print("</div>");
     print("</center>");
-    print("</body>");
+	print("</body>");
     print("</html>");
+	
 }else{
-  print("<!DOCTYPE html>");
-  print("<html>");
-  print("<body>");
-  print("<style type=\"text/css\">#infobox{font-size: 12px;}</style>");
-  print("<center>");
-  print("<input type=\"image\" src=\"images/btn_donateCC_LG.gif\" form=\"donate_form\" />");
-  print("<form action=\"donate.php\" target=\"blank\" id=\"donate_form\" method=\"post\">");
-  print("<p>Amount: $<input type=\"text\" id=\"paypalamount\" name=\"amount\" size=\"5\" class=\"inputbox\" value=\"5\" required=\"true\"></p>");
-  if(TIERED_DONOR){
-        print("<input type=\"radio\" name=\"tier\" value=\"1\" checked =\"1\" id=\"tier1\">".$group1['name']." <input type=\"radio\" name=\"tier\" value=\"2\" id=\"tier2\">".$group2['name']."<br />");
-  }
-  print("<label for=\"paypaloption1\">Steam ID:<br /></label><input type=\"text\" id=\"paypaloption1\" name=\"steamid_user\" required=\"true\" id=\"id-box\" placeholder=\"Please enter your SteamID\" required=\"true\" size=\"30\"></p>");
-  print("<div id='infobox'>");
-  print("<p>");
-  print("Acceptable formats:<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/{name} or {name}<br /></p>");
-  print("</div>");
-  print("</form>");
-  print("</center>");
-  print("</body>");
-  print("</html>");
+	print("<body id='content'>");
+    print("<center>");
+	print("<a href=\"index.php\"><img border=\"0\" src=\"images/logo.png\" alt=\"Community Logo\" width=\"220\" height=\"200\"></a>");
+	print("</br>");
+    print("<input type=\"image\" src=\"images/btn_donateCC_LG.gif\" form=\"donate_form\" />");
+	print("<form action=\"donate.php\" target=\"_self\" id=\"donate_form\" method=\"post\">");
+	
+	print("<p>". $lang->main[0]->amount ."<input type=\"text\" name=\"amount\" size=\"5\" onmouseover=\"this.style.backgroundColor='whitesmoke'\" onmouseout=\"this.style.backgroundColor='whitesmoke'\" class=\"inputbox\" value=\"5\" required=\"true\"></p>");
+    if(TIERED_DONOR){
+          print("<input type=\"radio\" name=\"tier\" value=\"1\" checked =\"1\" id=\"tier1\">".$group1['name']." <input type=\"radio\" name=\"tier\" value=\"2\" id=\"tier2\">".$group2['name']."<br />");
+    	print("<p>");
+	}
+      if($found_user){
+        print("<div id='steamid-box' style=\"display:none;\" ><label for='steamid_user'>Steam ID:<br /></label>");
+        print("<input type=\"text\" name=\"steamid_user\" required=\"true\" id=\"id-field\"  value=\"{$steamid}\" ></div>");
+        print("<div id=\"userid\">". $lang->main[0]->welcome ." {$playername} <br />");
+        print("<img src='{$avatarmedium}' style=\"border:1px solid black;border-radius:5px;\" /><br />");
+        print("<a href='#' onclick=\"gift();\"> ". $lang->main[0]->gift ." </a></div>");
+        print("<div id='infobox' style=\"display:none;\">");
+        print("<p>". $lang->main[0]->formats ."<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
+        print("</div>");
+      }else{
+        print("<label for=\"paypaloption1\">Steam ID:<br /></label><input type=\"text\" id=\"paypaloption1\" name=\"steamid_user\" required=\"true\" id=\"id-box\" onmouseover=\"this.style.backgroundColor='whitesmoke'\" onmouseout=\"this.style.backgroundColor='whitesmoke'\" placeholder=\"". $lang->main[0]->steamid ."\" required=\"true\" size=\"30\"></p>");
+        print("<div id='infobox'>");
+        print("<p>". $lang->main[0]->formats ."<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
+        print("</div>");
+    }
+	
+    print("</form>");
+	print("</div>");
+    print("</center>");
+	print("</body>");
+    print("</html>");
 }
+echo $footer
 
 ?>
-

@@ -26,12 +26,12 @@ if (isset($_POST['index'])) {
 	$mysqliD->query("UPDATE `custom_chatcolors` SET  `namecolor` =  '".$nameColor."',`textcolor` =  '".$chatColor."' WHERE `index` ='".$index."';")or die($log->logError($mysqliD->error . " " . $mysqliD->errno ." Line Number: " . __LINE__));
 	$log->logAction("$username/$email/$ip changed thier colors to $chatColor(chat) and $nameColor(name).");
 	if($sb->queryServers("sm_reloadccc")){
-		printf("<center><h1>You name color has been changed to %s, and chat color to %s</h1></center>", $nameColor , $chatColor);
+		printf("<center><h1><meta http-equiv=\"Content-Type\"content=\"text/html;charset=UTF8\">You name color has been changed to %s, and chat color to %s</h1></center>", $nameColor , $chatColor);
 		$log->logAction("CCC reloaded successfully");
 	}
 
 }else{
-	echo "<center><h1> Welcome back $username your donor perks expire on " .date('l F j, Y',$exp) . "</h1></center>";
+	echo "<center><h1><meta http-equiv=\"Content-Type\"content=\"text/html;charset=UTF8\">Welcome back $username your donor perks expire on " .date('l F j, Y',$exp) . "</h1></center>";
 }
 if($result = $mysqliD->query("SELECT * FROM `custom_chatcolors` WHERE identity = '$steamid';")or die($log->logError($mysqliD->error . " " . $mysqliD->errno ." Line Number: " . __LINE__))){
     if($result->num_rows > 0){
@@ -44,23 +44,24 @@ if($result = $mysqliD->query("SELECT * FROM `custom_chatcolors` WHERE identity =
     }
 }
 
-
-
 echo '
 <html>
+<meta http-equiv="Content-Type"content="text/html;charset=UTF8">
 <body>
+<title>Chat Color Changer</title>
 <head>
 <script type="text/javascript" src="../scripts/jscolor/jscolor.js"></script>
 </head>
 <center>
 <form id="color" method="post" action="perks.php">
-<p><input class="color" name="nameColor" value="#'.$nameColor.'" id="colorInput">Name Color<input class="color" name="chatColor" value="#'.$chatColor.'" id="colorInput">Chat Color</p>
+<p><input class="color" name="nameColor" value="#'.$nameColor.'" id="colorInput"> Name Color <input class="color" name="chatColor" value="#'.$chatColor.'" id="colorInput"> Chat Color </p>
 <input type="hidden" name="index" value="'.$index.'">
 <input type="submit" value="Change Colors" form="color">
 </form>
 </center>
 </body>
-</html>
-';
+</html>';
+
 unset($mysqliD);
+
 ?>

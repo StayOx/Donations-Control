@@ -134,7 +134,7 @@ echo'
             border: 1px solid black;
             border-radius: 5px;}
         input[type=submit]:hover{font-size:150%;
-            background-color: rgba(215, 44, 44, 0.8); 
+            background-color: rgba(166, 245, 61, 0.8); 
             color: black;}
         #sorry{color:red;
             padding: 10px;
@@ -173,9 +173,8 @@ echo'
     echo'</select>
     </form></br>';    
             if($return_donor===true){
-                printf("<p id='welcome_back'>" . $lang->donate[0]->msg2 ." ". date('l F j Y',$expiration_date) ."</p>" , $username);
+                printf("<p id='welcome_back'>". $lang->donate[0]->msg2 ." ". date('l F j Y',$expiration_date) ."</p>" , $username);
             } 
-                echo "<br />";
                 if ($amountSmall) {
                     exit("<h3 id='sorry'>".$lang->donate[0]->msg3."</h3>");
                 }
@@ -223,7 +222,7 @@ echo'
             }
             print('<br />');
             print('<br />');
-            print('<input type="submit" value="DONATE!" form="donate">');
+            print('<input type="submit" value="'.$lang->donate[0]->donatenow.'" form="donate">');
             print('</form>');
 ?>
         </center>

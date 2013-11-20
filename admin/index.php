@@ -4,10 +4,16 @@ define('NineteenEleven', TRUE);
 require_once '../includes/config.php';
 require_once '../includes/class_lib.php';
 $log = new log;
+$language = new language;
+if (isset($_POST['langSelect'])) {
+    $lang = $language->getLang($_POST['langSelect']);
+}else{
+    $lang = $language->getLang(DEFAULT_LANGUAGE);
+}
 	$user_name=$_POST['user_name'];
 	$password=$_POST['password'];
 	$mysqliS = new mysqli(SB_HOST,SB_USER,SB_PASS,SOURCEBANS_DB)or die(logError($mysqliS->error . " " . $mysqliS->errno));
-	
+
 	// To protect MySQL injection (more detail about MySQL injection)
 	$Suser_name = stripslashes($_POST['user_name']);
 	$password = sha1(sha1(SB_SALT . $password));
@@ -33,7 +39,7 @@ $log = new log;
 	$_SESSION['username'] = $Suser_name;
 	$_SESSION['email'] = $email;
 	//$_SESSION['authlevel'] = $authlevel;
-		print("<center><h1 class='success'> Welcome back {$Suser_name} </h1></center>");
+		print("<center><h1 class='success'><meta http-equiv=\"Content-Type\"content=\"text/html;charset=UTF8\">". $lang->login[0]->welcome ." {$Suser_name}</h1></center>");
 		$log->logAction("$user_name logged in.");
 				print("<script type='text/javascript'> setTimeout('reload()' , 1000) 
 		function reload(){
@@ -42,7 +48,7 @@ $log = new log;
 				exit();
 		
 	}else{
-		print "<center><h1 class='error'>Wrong Username or Password</h1></center>";
+		print "<center><h1 class='error'><meta http-equiv=\"Content-Type\"content=\"text/html;charset=UTF8\">". $lang->login[0]->error ."</h1></center>";
 		$log->logAction("Failed login attempt for user name: $user_name");
 	
 	}
@@ -50,6 +56,7 @@ $log = new log;
 
 ?>
 <div id='login'>
+<meta charset="UTF-8"> 
 <title>Admin Login</title>
 	<table width="300" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#CCCCCC">
 		<tr>
@@ -57,7 +64,7 @@ $log = new log;
 				<td>
 					<table width="100%" border="0" cellpadding="3" cellspacing="1" bgcolor="#FFFFFF">
 						<tr>
-							<td colspan="3"><strong>Admin Login </strong></td>
+							<td colspan="3"><strong>Admin Login</strong></td>
 						</tr>
 						<tr>
 							<td width="78">Username</td>
@@ -73,7 +80,6 @@ $log = new log;
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td><input type="submit" name="loginSubmit" value="Login" form='loginSubmit' /><input type='button' id='hideLogin' value='Cancel' /></td>
-							
 						</tr>
 					</table>
 				</td>

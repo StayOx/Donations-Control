@@ -47,12 +47,12 @@ $username = $mysqliD->real_escape_string($username);
 
 
     if (isset($user_id)) {
-    	die("<h1 class='error'>This user is already in the database</h1><br /><p><a href='javascript:history.go(-1);'>Click here to go back</a></p>");
+    	die("<h3 class='error'><meta http-equiv=\"Content-Type\"content=\"text/html;charset=UTF8\">". $lang->sysmsg[0]->useralreadydb ."</h3><br /><p><a href='javascript:history.go(-1);'>".$lang->misc[0]->msg1."</a></p>");
     	exit();
     } else {
     	$insert_sql = "INSERT INTO donors (username,steam_id,sign_up_date,renewal_date,current_amount,total_amount,expiration_date,steam_link,email,notes,activated,tier) VALUES ('{$username}', '{$steam_id}', '{$sign_up_date}', '{$renewal_date}','{$current_amount}','{$total_amount}','{$expiration_date}','{$steam_link}','{$email}','{$notes}','{$activated}','{$tier}');";
     }
-	$mysqliD->query($insert_sql) or die("<h1 class='error'>FAILED TO UPDATE USER</h1><br /><a href='javascript:history.go(-1);'>Click here to go back</a></h3>". $log->logError($mysqliD->error . " " . $mysqliD->errno ." Line Number: " . __LINE__));
+	$mysqliD->query($insert_sql) or die("<h3 class='error'><meta http-equiv=\"Content-Type\"content=\"text/html;charset=UTF8\">". $lang->sysmsg[0]->updatefail ."</h3><br /><a href='javascript:history.go(-1);'>".$lang->misc[0]->msg1."</a>". $log->logError($mysqliD->error . " " . $mysqliD->errno ." Line Number: " . __LINE__));
 
 	//insert/remove user from sourcebans database
 		switch ($activated) {
@@ -105,11 +105,11 @@ unset($ConvertID);
 unset($tools);
 unset($SteamQuery);
 unset($sb);
-$_SESSION['message'] = "<h1 class='success'>".sprintf($lang->sysmsg[0]->successenter)."</h1>";
+$_SESSION['message'] = "<h3 class='success'>".sprintf($lang->sysmsg[0]->successenter , $steam_id)."</h3>";
 if (STATS) {
 	@$log->stats("ME");
 }
-$log->logAction(sprintf($lang->logmsg[0]->manualentry,$_SESSION['username'], $username));
+$log->logAction(sprintf($lang->logmsg[0]->manualentry, $_SESSION['username'], $steam_id));
 header("Location: show_donations.php");
 }
 ?>
@@ -151,7 +151,7 @@ header("Location: show_donations.php");
 			     <?php
 			     if(TIERED_DONOR){
 			     		echo "<div id='vipSwitch'>";
-			        	echo "<input type='radio' name='tier' value='1' id='tierRadio' checked />".$group1['name'] . " ";
+			        	echo "<input type='radio' name='tier' value='1' id='tierRadio'  checked />".$group1['name'] . " ";
 			        	echo "<input type='radio' name='tier' value='2' id='tierRadio' />".$group2['name'] . " ";
 			        	echo "</div>";
 			     }?>

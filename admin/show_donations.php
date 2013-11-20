@@ -12,13 +12,21 @@ define('adminPage', TRUE);
 require_once '../includes/config.php';
 require_once '../includes/class_lib.php';
 require_once '../scripts/rcon_code.php';
-$mysqliD = new mysqli(DB_HOST,DB_USER,DB_PASS,DONATIONS_DB)or die($log->logError($mysqliD->error . " " . $mysqliD->errno ." Line Number: " . __LINE__));
-$log = new log;
 $language = new language;
-$lang = $language->getLang(DEFAULT_LANGUAGE);
-// if (isset($)) {
-// 	# code...
-// }
+$log = new log;
+$mysqliD = new mysqli(DB_HOST,DB_USER,DB_PASS,DONATIONS_DB)or die($log->logError($mysqliD->error . " " . $mysqliD->errno ." Line Number: " . __LINE__));
+
+if (isset($_POST['langSelect'])) {
+    $_SESSION['language'] = $_POST['langSelect'];
+}
+
+if (isset($_SESSION['language'])) {
+ 	$lang = $language->getLang($_SESSION['language']);
+ }else{
+    $lang = $language->getLang(DEFAULT_LANGUAGE);
+}
+
+
 echo '<html>';
 echo '<meta http-equiv="Content-Type"content="text/html;charset=UTF8">';
 echo '<head>';
@@ -31,10 +39,15 @@ echo'<script>
 		$(".date").datepicker({ dateFormat: "mm/dd/y" });
 		 $(".message").click(function(){
 		 	$(this).fadeOut();
-		 })
+		 });
 	});
+
+    function change(){
+        document.getElementById("langSelect").submit();
+    }
+
 </script>';
-echo '<title>Donor List</title>';
+echo '<title>'.$lang->admin[0]->title.'</title>';
 echo '</head>';
 echo '<body>';
 echo '<nav>';
@@ -47,6 +60,22 @@ echo '<li><a href="show_donations.php?error_log" id="errorLog">'.$lang->admin[0]
 echo '<li><a href="show_donations.php?logout" id="logout">'.$lang->admin[0]->logout .'</a></li>';
 echo '</ul>';
 echo '</nav>';
+echo "<title>". $lang->donate[0]->msg1 ."</title>";
+
+echo '<form id="langSelect" method="post">Change Language:
+<select name = "langSelect" onchange="change()">';
+    $langList = $language->listLang();
+    foreach ($langList as $list) {
+        if ($list == $lang->language) {
+           printf('<option value="%s" selected>%s</option>',$list,$availableLanguages[$list]);
+        }else{
+            printf('<option value="%s">%s</option>',$list,$availableLanguages[$list]);
+        }
+       
+    }
+    unset($i);
+echo'</select>
+</form>';    
 if (isset($_GET['logout'])) {
 
 	require_once 'pages/logout.php';
@@ -66,7 +95,7 @@ if (isset($_GET['logout'])) {
 	$tier = $_GET['tier'];		
 	}
 	$delete_sql = "DELETE FROM `donors` WHERE `steam_id` ='" . $steam_id . "';"; 
-	$mysqliD->query($delete_sql) or die("<h1 class='error'>Failed to delete $steam_id from donations database.</h1>" . $log->logError($mysqliD->error . " " . $mysqliD->errno ." Line Number: " . __LINE__));
+	$mysqliD->query($delete_sql) or die("<h3 class='error'>".sprintf($lang->sysmsg[0]->deletefail , $steam_id)."</h3>" . $log->logError($mysqliD->error . " " . $mysqliD->errno ." Line Number: " . __LINE__));
 	if ($sb->removeDonor($steam_id,$tier)) {
 		if($sb->queryServers('sm_reloadadmins')){
 			$log->logAction($log->sysmsg[0]->succrehash);
@@ -74,7 +103,7 @@ if (isset($_GET['logout'])) {
 			$log->logError($log->sysmsg[0]->failrehash);
 		}
 	}else{
-		printf("<h1 class='error'>".$lang->error[0]->msg1."</h1>",$steam_id);
+		printf("<h3 class='error'>".$lang->error[0]->msg1."</h3>",$steam_id);
 		$log->logError('Unable to remove $steam_id from sourcebans.');
 	}
 	unset($sb);
@@ -85,10 +114,7 @@ if (isset($_GET['logout'])) {
 		}
 	}
 	$_SESSION['message']="<h3 class='success'>".sprintf($lang->sysmsg[0]->deleted , $steam_id)."</h3>";
-
-	$log->logAction(sprintf($lang->logmsg[0]->deleted , $_SESSION['username'], $steam_id));
-
-
+	$log->logAction(sprintf($lang->logmsg[0]->deleted, $_SESSION['username'], $steam_id));
 	header('location: show_donations.php');
 
 }elseif(isset($_GET['error_log'])){

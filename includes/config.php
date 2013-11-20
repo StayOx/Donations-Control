@@ -13,7 +13,6 @@ if(!defined('NineteenEleven')){die('Direct access not premitted');}
 //PayPal Info//
 ///////////////
 
-
 define('PP_EMAIL', 'your@paypal.com');              //The Paypal account's email address
 define('PP_DESC',  'Donation to your clans servers');  //Paypal purchase description
 define('PP_IPN', 'http://yourdomain.com/donation/scripts/ipn.php'); //Address to ipn.php included within the donations folder
@@ -23,6 +22,7 @@ define('PP_CURRENCY', 'USD'); //https://developer.paypal.com/webapps/developer/d
 
 
 //Use PayPal Sandbox for testing?
+
 define('PP_SANDBOX', false);
 define('PP_SANDBOX_EMAIL', 'yoursandbox@paypal.com');
 
@@ -51,8 +51,7 @@ define('SOURCEBANS_DB', 'sourcebans'); // sourcebans database, this is needed.
 define('SB_PREFIX', 'sb'); //Sourcebans database prefix. Only change this value if you changed your database prefix when setting up SourceBans.
 define('SB_SALT', 'SourceBans'); //dont change this unless you changed your salt in sourcebans (if you dont know what salt is, you didnt change it)
 define('SB_ADMINS', 'Administrators'); //name of admin group in sourcebans which has access to the donor panel
-///////////////////////////////////////////////////////////////////////////////////////////
-define('TIERED_DONOR', true); //multiple class of donors eg. VIP/Elite
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*How to get this information
 *Add a donor inside your sourcebans web panel, you can use anyone.
@@ -62,6 +61,9 @@ define('TIERED_DONOR', true); //multiple class of donors eg. VIP/Elite
 *and make sure the donor is assigned to that group.
 *Then use the config_lookup.php and look up that donors steamid, and enter those values here.
 */
+
+define('TIERED_DONOR', true); //multiple class of donors eg. VIP/Elite
+
 //Tier 1 donors (required)
 $group1['name'] = 'Donor';
 $group1['group_id'] = '0';
@@ -69,8 +71,6 @@ $group1['srv_group_id'] = '0';
 $group1['server_id'] = '0';
 $group1['multiplier'] = '6.2'; //This will control how many days a donor gets perks for. $5 * 6.2 days = 31 days of perks
 ////////////////////////////////////////////
-
-
 
 //Tier 2 donors (only needed if TIERED_DONOR is true)
 $group2['name'] = 'VIP';
@@ -95,22 +95,24 @@ $mail['donor'] = true; //Send confimation/ thankyou email to the donor?
 $mail['donorSubject'] = 'Thank your for your donation';
 $mail['donorMsg'] = 'Message to send to your donors';
 
-/////////////////////////
-////Language Settings////
-/////////////////////////
+//////////////////////////
+//Language Settings///////
+//////////////////////////
 
-define("DEFAULT_LANGUAGE", "en-us"); // name of file in translation folder. dont add .json
-$availableLanguages = array('en-us' =>'English' , '1337' =>'1337 5pEek','pt-br' => 'Portuguese (Brazil)', 'es-mx' => 'Spanish (Mexico)'); //set friendly display names here http://msdn.microsoft.com/en-us/library/ms533052(vs.85).aspx
+//Name of file in translation folder. dont add .json
+define("DEFAULT_LANGUAGE", "en-us");
+//Set friendly display names here http://msdn.microsoft.com/en-us/library/ms533052(vs.85).aspx
+$availableLanguages = array('en-us' =>'English', '1337' =>'1337 5pEek', 'pt-br' => 'Português', 'es-mx' => 'Español');
 
 //////////////////////
-////Miscellaneous////
-////////////////////
+////Miscellaneous/////
+//////////////////////
 
-define('CCC', true); //https://forums.alliedmods.net/showpost.php?p=1738314&postcount=56#MySQLModule
+define('CCC', true); //Custom Chat Color Mysql Module - https://forums.alliedmods.net/showpost.php?p=1738314&postcount=56#MySQLModule
 date_default_timezone_set('America/New_York'); //http://php.net/manual/en/timezones.php
 define('cache_time', '15'); //days to resolve cache for information from steam, mainly the avatar image, and display name.
 define('PLAYER_TRACKER', true); //use player tracker to automatically fetch steam ids?
-define('API_KEY' , 'XXXXXXXXXXXXXXXXXXXXXXXXXX');
+define('API_KEY' , 'XXXXXXXXXXXXXXXXXXXXXXXXXX'); //Steam Community API Key - https://steamcommunity.com/dev/apikey
 define("STATS", true);
 
 ////////////////////////
@@ -127,5 +129,5 @@ define('SB_PASS', DB_PASS);
 }
 
 //Please consider donating before removing/changing the footer http://nineteeneleven.info
-$footer = "<div id='footer' style='background-color:black;border-radius:10px;padding:10px;margin:5px;color:white;position:fixed;bottom:0px;width:97%;z-index:99;'><a style='text-decoration:none;color:white;' href='http://nineteeneleven.info' target='_blank' onmouseover=\"this.style.backgroundColor='red'\" onmouseout=\"this.style.backgroundColor=''\">Donations Control 2.0.4 Powered by NineteenEleven</a></div>";
+$footer = "<div id='footer' style='background-color:white;border-radius:5px;border: 1px solid black;padding:5px;margin:5px;color:black;position:fixed;bottom:0px;width:15%;z-index:99;'>Powered by <a href='http://nineteeneleven.info' target='_blank' onmouseover=\"this.style.backgroundColor='#FF6633'\" onmouseout=\"this.style.backgroundColor=''\">NineteenEleven</a></div>";
 ?>

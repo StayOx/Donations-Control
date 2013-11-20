@@ -2,12 +2,10 @@
 if(file_exists("logs/action.log")){
 
 $log = new log;
-
 $error=array_reverse($log->getLog('action.log'));
 
-
 echo "<table border='2'>";
-echo "<tr><th>Date/Time</th><th>Action</th></tr>";
+echo "<tr><th>".$lang->action[0]->datetime."</th><th>".$lang->action[0]->actions."</th></tr>";
 foreach ($error as $err) {
 	$data = explode("|", $err);
 	echo "<tr>";
@@ -19,7 +17,7 @@ foreach ($error as $err) {
 echo "</table>";
 unset($log);
 }else{
-	$_SESSION['message'] = "<h1 class='success'>No Actions Reported</h1>";
+	$_SESSION['message'] = "<h3 class='success'>".$lang->action[0]->noactions."</h3>";
 	header("location: show_donations.php");
 }
 ?>

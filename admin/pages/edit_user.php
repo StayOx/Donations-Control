@@ -50,7 +50,7 @@ if (isset($_POST['edit_user_form'])) {
 		$post_tier = $row['tier'];
 
 	} else {
-	  die("<h1 class='error'>Error locating donor with ID {$user_id}</h1>" . $log->logError('Error locating donor with ID $user_id'));
+	  die("<h2 class='error'>Error locating donor with ID {$user_id}</h2>" . $log->logError('Error locating donor with ID $user_id'));
 	}
 
 	//check to see if there was change in activation
@@ -105,21 +105,21 @@ if (isset($_POST['edit_user_form'])) {
 	}
 
 	$insert_sql="UPDATE `donors` SET `username` = '{$username}', `steam_id` = '{$steam_id}', `sign_up_date` = '{$sign_up_date}', `email` = '{$email}', `renewal_date` = '{$renewal_date}', `current_amount` = '{$current_amount}', `total_amount` = '{$total_amount}', `expiration_date` = '{$expiration_date}', `steam_link` = '{$steam_link}', `notes` = '{$notes}', `activated` = '{$activated}', `tier` = '{$tier}' WHERE `user_id` = '{$user_id}';";
-	$mysqliD->query($insert_sql) or die("<h1 class='error'>".$lang->sysmsg[0]->updatefail."</h1><br /><a href='javascript:history.go(-1);'>".$lang->misc[0]->msg1."</a></h3>". $log->logError($mysqliD->error. " " . $mysqliD->errno ." Line Number: " . __LINE__));
+	$mysqliD->query($insert_sql) or die("<h3 class='error'>".$lang->sysmsg[0]->updatefail."</h3><br /><a href='javascript:history.go(-1);'>".$lang->misc[0]->msg1."</a></h3>". $log->logError($mysqliD->error. " " . $mysqliD->errno ." Line Number: " . __LINE__));
 
 	if($rehash){
 		if(!$sb->queryServers('sm_reloadadmins')){
-			$_SESSION['message'] = "<h1 class='success'>".sprintf($lang->sysmsg[0]->successedit, $username)."</h1><br /><h1 class='error'> ".$lang->sysmsg[0]->failrehash."</h1>";
+			$_SESSION['message'] = "<h3 class='success'>".sprintf($lang->sysmsg[0]->successedit, $username)."</h3><br /><h3 class='error'> ".$lang->sysmsg[0]->failrehash."</h3>";
 			$log->logAction(sprintf($lang->logmsg[0]->edit , $_SESSION['username'], $username));
 			$log->logError('Server rehash failed');
 		}else{
-			$_SESSION['message'] = printf("<h1 class='success'>".sprintf($lang->sysmsg[0]->successedit, $username)."</h1>", $username);
+			$_SESSION['message'] = printf("<h3 class='success'>".sprintf($lang->sysmsg[0]->successedit, $username)."</h3>", $username);
 			$log->logAction(sprintf($lang->logmsg[0]->edit , $_SESSION['username'], $username));
 			
 			$log->logAction('Rehashed all servers');
 		}
 	}else{
-		$_SESSION['message'] = "<h1 class='success'>".sprintf($lang->sysmsg[0]->successedit, $username)."</h1>";
+		$_SESSION['message'] = "<h3 class='success'>".sprintf($lang->sysmsg[0]->successedit, $username)."</h3>";
 		$log->logAction(sprintf($lang->logmsg[0]->edit , $_SESSION['username'], $username));		
 	}
 	if (STATS) {
@@ -159,7 +159,7 @@ if($result){
 
 } else {
 	//$mysqliD->close();
-    die("<h1 class='error'>Error locating donor with ID {$user_id}");
+    die("<h2 class='error'>Error locating donor with ID {$user_id}");
 }
 ?>
 
@@ -229,7 +229,7 @@ if($result){
 			        	<input type="radio" name='activated' value='1' <?php if($activated==='1'){echo "checked />" .$lang->admin[0]->perksactivated;} else {echo "/>" .$lang->admin[0]->addperks;} ?> 
 			        	<input type="radio" name='activated' value='2' <?php if($activated==='2'){echo "checked />" .$lang->admin[0]->perksoff;} else {echo "/>" .$lang->admin[0]->noperks;} ?> 
 					<br />
-			     <?php
+				 <?php
 			     if(TIERED_DONOR){
 			     		if($tier =="1"){
 			        	echo "<input type='radio' name='tier' value='1' id='tierRadio' checked /> ".$group1['name'] . " ";
@@ -248,7 +248,7 @@ if($result){
 		   		echo '<input type="button" onclick="delete_confirm(\''.$steam_id.'\',\''.$tier.'\');" value="'.$lang->admin[0]->delete.' '.$username.'"/>';
 		   }else{
 		   		echo '<input type="button" onclick="delete_confirm(\''.$steam_id.'\');" value="'.$lang->admin[0]->delete.' '.$username.'"/>';
-		   }   
+		   }  
 		
 echo $footer;
 echo "</html>";

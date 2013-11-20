@@ -233,7 +233,7 @@ if (!$fp)
                         }else{
                             fwrite($log, "{$username} is alreay in sourcebans, skipping.\r\n");
                         }
-                $sysLog->logAction("AUTOMATIC ACTION: $username Added (New Donation)");
+                $sysLog->logAction("AUTOMATIC ACTION: {$username} Added (New Donation)");
             if(sys_email){
 
                 $mail_body = "{$username} Has made a donation of \${$amount} though PayPal, and their donor perks have been automatically activated"; 

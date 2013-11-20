@@ -33,10 +33,10 @@ while($donor = $result->fetch_array(MYSQLI_ASSOC)){
 		//turn off sourcebans
 			if($sb->removeDonor($steam_id,$tier)){
 				$query_sb = true;
-				fwrite($log, "$username removed from sourcebans successfully\r\n");
-				$sysLog->logAction("AUTOMATIC ACTION: $username Removed (Perks Expired)");
+				fwrite($log, "{$username} removed from sourcebans successfully\r\n");
+				$sysLog->logAction("AUTOMATIC ACTION: {$username} Removed (Perks Expired)");
 			}else{
-				fwrite($log, "Something went wrong with removing $username from sourcebans\r\n");
+				fwrite($log, "Something went wrong with removing {$username} from sourcebans\r\n");
 			}
 			if(TIERED_DONOR&&CCC){
 				@$mysqliD->query("DELETE FROM `custom_chatcolors` WHERE identity ='" . $steam_id . "';");

@@ -1,12 +1,11 @@
 <?php
-
 if(file_exists("logs/error.log")){
+
 $log = new log;
 $error=array_reverse($log->getLog('error.log'));
 
-
 echo "<table border='2'>";
-echo "<tr><th>Date/Time</th><th>Error</th><th>File</th></tr>";
+echo "<tr><th>".$lang->error[0]->datetime."</th><th>".$lang->error[0]->errors."</th><th>".$lang->error[0]->file."</th></tr>";
 foreach ($error as $err) {
 	$data = explode("|", $err);
 	echo "<tr>";
@@ -18,7 +17,7 @@ foreach ($error as $err) {
 echo "</table>";
 unset($log);
 }else{
-	$_SESSION['message'] = "<h1 class='success'>No Errors Reported</h1>";
+	$_SESSION['message'] = "<h3 class='success'>".$lang->error[0]->noerrors."</h3>";
 	header("location: show_donations.php");
 }
 ?>

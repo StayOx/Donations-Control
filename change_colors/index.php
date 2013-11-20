@@ -57,6 +57,8 @@ if (isset($_POST['loginSubmit'])) {
 
 ?>
 <div id='login'>
+<meta charset="UTF-8"> 
+<title>Perks Manager - Login</title>
 	<table width="300" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#CCCCCC">
 		<tr>
 			<form id="loginSubmit" method="POST" action="index.php">
