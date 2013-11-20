@@ -184,12 +184,12 @@ echo'
         print("<img src='{$avatarmedium}' style=\"border:1px solid black;border-radius:5px;\" /><br />");
         print("<a href='#' onclick=\"gift();\">". $lang->main[0]->gift ."</a></div>");
         print("<div id='infobox' style=\"display:none;\">");
-        print("<p>". $lang->main[0]->formats ."<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
+        print("<p>". $lang->main[0]->formats ." <a href=\"http://steamidfinder.com/\" target=\"_blank\">(?)</a><br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
         print("</div>");
       }else{
         print("<label for=\"paypaloption1\">Steam ID:<br /></label><input type=\"text\" id=\"paypaloption1\" name=\"steamid_user\" required=\"true\" id=\"id-box\" onmouseover=\"this.style.backgroundColor='whitesmoke'\" onmouseout=\"this.style.backgroundColor='whitesmoke'\" placeholder=\"". $lang->main[0]->steamid ."\" required=\"true\" size=\"30\"></p>");
         print("<div id='infobox'>");
-        print("<p>". $lang->main[0]->formats ."<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
+        print("<p>". $lang->main[0]->formats ." <a href=\"http://steamidfinder.com/\" target=\"_blank\">(?)</a><br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
         print("</div>");
 	}
 
@@ -219,12 +219,12 @@ echo'
         print("<img src='{$avatarmedium}' style=\"border:1px solid black;border-radius:5px;\" /><br />");
         print("<a href='#' onclick=\"gift();\"> ". $lang->main[0]->gift ." </a></div>");
         print("<div id='infobox' style=\"display:none;\">");
-        print("<p>". $lang->main[0]->formats ."<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
+        print("<p>". $lang->main[0]->formats ." <a href=\"http://steamidfinder.com/\" target=\"_blank\">(?)</a><br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
         print("</div>");
       }else{
         print("<label for=\"paypaloption1\">Steam ID:<br /></label><input type=\"text\" id=\"paypaloption1\" name=\"steamid_user\" required=\"true\" id=\"id-box\" onmouseover=\"this.style.backgroundColor='whitesmoke'\" onmouseout=\"this.style.backgroundColor='whitesmoke'\" placeholder=\"". $lang->main[0]->steamid ."\" required=\"true\" size=\"30\"></p>");
         print("<div id='infobox'>");
-        print("<p>". $lang->main[0]->formats ."<br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
+        print("<p>". $lang->main[0]->formats ." <a href=\"http://steamidfinder.com/\" target=\"_blank\">(?)</a><br />STEAM_0:0:0000000<br />steamcommunity.com/profiles/1234567891011<br />steamcommunity.com/id/". $lang->main[0]->steamlink ."<br /></p>");
         print("</div>");
     }
 	
