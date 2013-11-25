@@ -1,0 +1,17 @@
+ "Databases"
+{
+	"driver_default"		"mysql"
+	
+	// When specifying "host", you may use an IP address, a hostname, or a socket file path=
+	
+	"donations"
+	{
+		"driver"			"default"
+		"host"				""
+		"database"			"donations"
+		"user"				""
+		"pass"				""
+		//"timeout"			"0"
+		"port"				"3306"
+	}
+}

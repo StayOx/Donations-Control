@@ -2,7 +2,8 @@
 -----------------------------------------------------------------------------
 VERY BASIC PLAYER TRACKER - SOURCEMOD PLUGIN
 -----------------------------------------------------------------------------
-Code Written By msleeper (c) 2010
+Code Written By Michelle Sleeper (c) 2010
+Optimized by Kigen (c) 2010
 Visit http://www.msleeper.com/ for more info!
 -----------------------------------------------------------------------------
 This plugin is a simple player tracker that logs player information into a
@@ -44,6 +45,11 @@ Version History
 
 -- 1.5 (7/15/10)
  . Added server port due to request.
+
+-- 1.6 (10/11/2010)
+ . Converted plugin to use full threaded queries to help eliminate lagging
+ . during player connection. Hat tip goes to Kigen.
+ . Optimized the code. - Kigen
 -----------------------------------------------------------------------------
 */
 
@@ -52,7 +58,7 @@ Version History
 #include <sourcemod>
 #include <geoip>
 
-#define PLUGIN_VERSION "1.5"
+#define PLUGIN_VERSION "1.6"
 
 // Database handle
 new Handle:db = INVALID_HANDLE;
@@ -60,11 +66,18 @@ new Handle:db = INVALID_HANDLE;
 // Logfile path var
 new String:Logfile[PLATFORM_MAX_PATH];
 
+// Game Type
+new String:GameType[32];
+
 // Cvar handles
-new Handle:cvar_ServerIP = INVALID_HANDLE;
-new Handle:cvar_ServerPort = INVALID_HANDLE;
 new Handle:cvar_AddTime = INVALID_HANDLE;
 new Handle:cvar_GeoIPType = INVALID_HANDLE;
+
+// Cvar settings
+new String:ServerIP[64];
+new String:ServerPort[64];
+new Float:AddTime = 90.0;
+new GeoIPType = 1;
 
 // Plugin Info
 public Plugin:myinfo =
@@ -84,18 +97,33 @@ public OnPluginStart()
 	
 	// Config Cvars
 	cvar_AddTime = CreateConVar("sm_tracker_addtime", "90.0", "Add/update players in the database after this many seconds", FCVAR_PLUGIN, true, 1.0);
-	cvar_GeoIPType = CreateConVar("sm_tracker_geoiptype", "1", "Add player's GeoIP country to the database. 0 = Disabled, 1 = 2 letter Country Code, 2 = 3 letter Country Code, 3 = full Country Name.", FCVAR_PLUGIN, true, 0.0, true, 3.0);
+	cvar_GeoIPType = CreateConVar("sm_tracker_geoiptype", "1", "Add player's GeoIP country to the database. 0 = Disabled, 1 = two letter Country Code, 2 = three letter Country Code, 3 = full Country Name.", FCVAR_PLUGIN, true, 0.0, true, 3.0);
+
+	// Hook Config CVars
+	HookConVarChange(cvar_AddTime, AddTime_Change);
+	HookConVarChange(cvar_GeoIPType, GeoIP_Change);
+
+	// Get the Game Type
+	GetGameFolderName(GameType, sizeof(GameType));
+
+	// Get the Server's IP and port
+	GetConVarString(FindConVar("ip"), ServerIP, sizeof(ServerIP));
+	GetConVarString(FindConVar("hostport"), ServerPort, sizeof(ServerPort));
 
 	// Make that config!
-	AutoExecConfig(true, "tracker");
+	AutoExecConfig(true, "plugin.tracker");
 
 	// Log file for SQL errors
 	BuildPath(Path_SM, Logfile, sizeof(Logfile), "logs/tracker.log");
 
+	// Connect to the almighty database
+	// db = SQL_Connect("donations", true, Error, sizeof(Error));
+	SQL_TConnect(SQL_GetDatabase, "donations");
+
 	// Init player arrays
-	for (new i = 1; i <= MaxClients; i++)
+	for ( new i = 1; i <= MaxClients; i++ )
 	{
-		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))
+		if ( IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i) )
 			CreateTimer(GetConVarFloat(cvar_AddTime), timer_InsertPlayer, i);
 	}
 }
@@ -103,85 +131,78 @@ public OnPluginStart()
 // When a client connects, insert them into the database
 public OnClientAuthorized(client, const String:auth[])
 {
-	if (IsFakeClient(client))
+	if ( IsFakeClient(client) )
 		return;
 
-	CreateTimer(GetConVarFloat(cvar_AddTime), timer_InsertPlayer, client);
+	CreateTimer(AddTime, timer_InsertPlayer, client);
 }
 
-public Action:timer_InsertPlayer(Handle:timer, any:data)
+public Action:timer_InsertPlayer(Handle:timer, any:client)
 {
-	new client = data;
-
-	if (!IsClientConnected(client) || !IsClientInGame(client) || IsFakeClient(client))
+	if ( !IsClientConnected(client) || IsFakeClient(client) )
 		return;
 
-	new String:SteamID[32];
+	new String:SteamID[32], String:PlayerName[MAX_NAME_LENGTH], String:PlayerIP[32], String:GeoIPCode[4], String:GeoIPCountry[45], String:query[1024];
+
 	GetClientAuthString(client, SteamID, sizeof(SteamID));
 
-	new String:PlayerName[MAX_NAME_LENGTH];
 	GetClientName(client, PlayerName, sizeof(PlayerName));
 	ReplaceString(PlayerName, sizeof(PlayerName), "\"", "");
 	ReplaceString(PlayerName, sizeof(PlayerName), "'", "");
 	ReplaceString(PlayerName, sizeof(PlayerName), ";", "");
-	ReplaceString(PlayerName, sizeof(PlayerName), "´", "");
 	ReplaceString(PlayerName, sizeof(PlayerName), "`", "");
 
-	new String:PlayerIP[32];
 	GetClientIP(client, PlayerIP, sizeof(PlayerIP));
 
-	new String:GameType[32];
-	GetGameFolderName(GameType, sizeof(GameType));
+	// Get the client's Country Code
+	if ( GeoIPType == 1 ) GeoipCode2(PlayerIP, GeoIPCode);
+	else if ( GeoIPType == 2 ) GeoipCode3(PlayerIP, GeoIPCode);
+	else if ( GeoIPType == 3 ) GeoipCountry(PlayerIP, GeoIPCountry, sizeof(GeoIPCountry));
 
-	new String:ServerIP[32];
-	cvar_ServerIP = FindConVar("ip");
-	GetConVarString(cvar_ServerIP, ServerIP, sizeof(ServerIP));
-
-	new String:ServerPort[32];
-	cvar_ServerPort = FindConVar("hostport");
-	GetConVarString(cvar_ServerPort, ServerPort, sizeof(ServerPort));
-
-	new String:GeoIPCode[4];
-	new String:GeoIPCountry[45];
-	new GeoIPType = GetConVarInt(cvar_GeoIPType);
-
-	if (GeoIPType == 1) GeoipCode2(PlayerIP, GeoIPCode);
-	else if (GeoIPType == 2) GeoipCode3(PlayerIP, GeoIPCode);
-	else if (GeoIPType == 3) GeoipCountry(PlayerIP, GeoIPCountry, sizeof(GeoIPCountry));
-
-	if (GeoIPType == 1 || GeoIPType == 2)
+	// Convert code into string. Method 3 already process it into a string, so do method 1 and 2.
+	if ( GeoIPType == 1 || GeoIPType == 2 )
 	Format(GeoIPCountry, sizeof(GeoIPCountry), "%s", GeoIPCode);
 
-	new String:query[1024];
+	// Do the query
 	Format(query, sizeof(query), "INSERT INTO player_tracker (steamid, playername, playerip, servertype, serverip, serverport, geoipcountry, status) \
 													  VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', 'new') \
 													  ON DUPLICATE KEY UPDATE playername='%s', playerip='%s', servertype='%s', serverip='%s', serverport='%s', geoipcountry='%s'",
 													  SteamID, PlayerName, PlayerIP, GameType, ServerIP, ServerPort, GeoIPCountry,
 															   PlayerName, PlayerIP, GameType, ServerIP, ServerPort, GeoIPCountry);
-	SendQuery(query);
+	SQL_TQuery(db, SQL_ErrorCallback, query);
 }
 
-// Do the query
-SendQuery(String:query[])
+// Connection error logging
+public SQL_GetDatabase(Handle:owner, Handle:hndl, const String:error[], any:data)
 {
-	new String:Error[1024];
-	db = SQL_Connect("donations", true, Error, sizeof(Error));
-
-	if (db == INVALID_HANDLE)
+	if ( hndl == INVALID_HANDLE )
 	{
-		LogToFile(Logfile, "Failed to connect to database: %s", Error);
-		return;
+		LogToFile(Logfile, "Failed to connect to database: %s", error);
+		SetFailState("Failed to connect to the database");
 	}
 
-	SQL_TQuery(db, SQL_ErrorCallback, "SET NAMES 'utf8'");
-	SQL_TQuery(db, SQL_ErrorCallback, query);
+	db = hndl;
 
-	CloseHandle(db);
+	decl String:query[1024];
+	FormatEx(query, sizeof(query), "SET NAMES \"UTF8\"");
+	SQL_TQuery(db, SQL_ErrorCallback, query);
 }
 
 // Error logging
 public SQL_ErrorCallback(Handle:owner, Handle:hndl, const String:error[], any:data)
 {
-	if(!StrEqual("", error))
+	if ( !StrEqual("", error) )
 		LogToFile(Logfile, "SQL Error: %s", error);
 }
+
+// Get cvar changes
+public AddTime_Change(Handle:convar, const String:oldValue[], const String:newValue[])
+{
+	AddTime = GetConVarFloat(cvar_AddTime);
+}
+
+public GeoIP_Change(Handle:convar, const String:oldValue[], const String:newValue[])
+{
+	GeoIPType = GetConVarInt(cvar_GeoIPType);
+}
+
